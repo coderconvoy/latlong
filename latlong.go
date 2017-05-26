@@ -1,3 +1,4 @@
+// A Package for looking at the google API for locaiton and converting an address into a latitude longditude pair
 package latlong
 
 import (
@@ -10,11 +11,13 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+//LatLong the result type of calling GetLatLong
 type LatLong struct {
 	Lat  float64 `json:"lat"`
 	Long float64 `json:"lng"`
 }
 
+//GetLatLong takes an address and returns a Latitude Longditude Pair
 func GetLatLong(add string) (LatLong, error) {
 	gres, err := Get("https://maps.googleapis.com/maps/api/geocode/json",
 		"key", GEOKEY,
@@ -25,7 +28,6 @@ func GetLatLong(add string) (LatLong, error) {
 	}
 
 	jres := gjson.Get(string(gres), "results.0.geometry.location")
-	//	fmt.Println("JRES:", jres)
 	res := LatLong{}
 	err = json.Unmarshal([]byte(jres.Raw), &res)
 	if err != nil {
